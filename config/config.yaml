@@ -1,7 +1,7 @@
 base_url: "https://www.automationexercise.com/"
 api_base_url: "https://automationexercise.com/api"
 browser: "chromium"
-headless: false
+headless: true
 viewport:
   width: 1280
   height: 720
