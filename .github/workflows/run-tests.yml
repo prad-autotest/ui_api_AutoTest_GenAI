@@ -1,26 +1,31 @@
-name: Run Tests on Pull Requests
+name: Run Web & API Tests on PR
 
 on:
   pull_request:
     branches:
-      - main  # Change this if your default branch is different
+      - main
 
 jobs:
-  test:
-    name: 🧪 Run Pytest on PR
+  run-tests:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        python-version: [3.10]
+
     steps:
-      - name: ⬇️ Checkout PR code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: 🐍 Set up Python
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'  # Adjust if you use a different Python version
+          python-version: ${{ matrix.python-version }}
 
-      - name: 📦 Install Python dependencies
+      - name: Install dependencies
         run: |
+          python -m venv .venv
+          source .venv/bin/activate
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
@@ -29,11 +34,12 @@ jobs:
           source .venv/bin/activate
           playwright install --with-deps
 
-      - name: Run web Tests (Headless)
+      - name: Run API Tests
+        run: |
+          source .venv/bin/activate
+          pytest -m api --tb=short --disable-warnings
+
+      - name: Run Web Tests (Headless)
         run: |
           source .venv/bin/activate
           pytest -m web --tb=short --disable-warnings
-
-      - name: 🧪 Run pytest
-        run: |
-#          pytest -v
