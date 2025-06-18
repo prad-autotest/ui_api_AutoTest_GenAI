@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   run-tests:
@@ -17,6 +20,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN}}
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
